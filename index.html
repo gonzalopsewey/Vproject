@@ -1,35 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Responsive Image</title>
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Video Banner with Sound</title>
+  <style>
+    /* CSS Styling */
     body {
-        background: #000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
+      margin: 0;
+      padding: 0;
+      background-color: black; /* Ensures black bars if video doesn't fill the screen */
     }
-    a {
-        text-align: center;
+  
+    .video-banner {
+      position: relative;
+      width: 100%;
+      height: 100vh; /* Make the video fill the viewport height */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      background-color: black; /* Black background for bars */
     }
-    img {
-        max-width: 100%;
-        height: auto;
-        display: block;
+  
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Maintain aspect ratio and add black bars if needed */
+      display: block;
     }
-</style>
+  
+    .sound-notice {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      padding: 10px 15px;
+      border-radius: 5px;
+      font-size: 14px;
+      z-index: 2;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-<a href="https://topaff.pro/?a=iruqN9Y9ucnK" target="_BLANK" title="nice photos">
-    <img src="photo.jpeg" alt="Responsive Image">
-</a>
+  <!-- HTML Structure -->
+  <div class="video-banner">
+    <video id="bannerVideo" autoplay muted loop playsinline>
+      <source src="video.MP4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <div id="soundNotice" class="sound-notice">🔇 Sound Off</div>
+  </div>
+
+  <!-- JavaScript Functionality -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const video = document.getElementById('bannerVideo');
+      const soundNotice = document.getElementById('soundNotice');
+
+      // Ensure the video starts muted for autoplay compliance
+      video.muted = true;
+
+      // Add user interaction to toggle sound
+      soundNotice.addEventListener('click', function () {
+        if (video.muted) {
+          video.muted = false; // Unmute video
+          video.play().catch(error => {
+            console.error("Error playing video with sound:", error);
+          });
+          soundNotice.textContent = "🔊 Sound On";
+        } else {
+          video.muted = true; // Mute video
+          soundNotice.textContent = "🔇 Sound Off";
+        }
+      });
+
+      // Set up IntersectionObserver to manage playback in the viewport
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            video.play().catch(error => {
+              console.log("Autoplay error:", error);
+            });
+          } else {
+            video.pause();
+          }
+        });
+      }, { threshold: 0.5 });
+
+      observer.observe(video);
+    });
+  </script>
 </body>
 </html>
