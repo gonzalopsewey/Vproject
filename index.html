@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Responsive Video Banner with Sound</title>
+  <title>Responsive Video Banner with Redirect</title>
   <style>
     /* CSS Styling */
     body {
@@ -11,7 +11,7 @@
       padding: 0;
       background-color: black; /* Ensures black bars if video doesn't fill the screen */
     }
-  
+
     .video-banner {
       position: relative;
       width: 100%;
@@ -22,24 +22,22 @@
       overflow: hidden;
       background-color: black; /* Black background for bars */
     }
-  
+
     video {
       width: 100%;
       height: 100%;
       object-fit: contain; /* Maintain aspect ratio and add black bars if needed */
       display: block;
     }
-  
-    .sound-notice {
+
+    /* Clickable Link Overlay */
+    #bannerLink {
       position: absolute;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(0, 0, 0, 0.6);
-      color: #fff;
-      padding: 10px 15px;
-      border-radius: 5px;
-      font-size: 14px;
-      z-index: 2;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
       cursor: pointer;
     }
   </style>
@@ -47,43 +45,32 @@
 <body>
   <!-- HTML Structure -->
   <div class="video-banner">
-    <video id="bannerVideo" autoplay muted loop playsinline>
+    <!-- Video -->
+    <video id="bannerVideo" autoplay loop playsinline>
       <source src="video.MP4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
-    <div id="soundNotice" class="sound-notice">🔇 Sound Off</div>
+    <!-- Clickable Link -->
+    <a href="https://topaff.pro/?a=iruqN9Y9ucnK" id="bannerLink" target="_blank"></a>
   </div>
 
   <!-- JavaScript Functionality -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const video = document.getElementById('bannerVideo');
-      const soundNotice = document.getElementById('soundNotice');
 
-      // Ensure the video starts muted for autoplay compliance
-      video.muted = true;
-
-      // Add user interaction to toggle sound
-      soundNotice.addEventListener('click', function () {
-        if (video.muted) {
-          video.muted = false; // Unmute video
-          video.play().catch(error => {
-            console.error("Error playing video with sound:", error);
-          });
-          soundNotice.textContent = "🔊 Sound On";
-        } else {
-          video.muted = true; // Mute video
-          soundNotice.textContent = "🔇 Sound Off";
-        }
+      // Attempt to autoplay the video with sound
+      video.play().catch(error => {
+        console.log("Autoplay with sound was blocked. Playing muted instead.");
+        video.muted = true;
+        video.play().catch(err => console.error("Video failed to play even muted:", err));
       });
 
       // Set up IntersectionObserver to manage playback in the viewport
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            video.play().catch(error => {
-              console.log("Autoplay error:", error);
-            });
+            video.play().catch(err => console.error("Error playing video:", err));
           } else {
             video.pause();
           }
